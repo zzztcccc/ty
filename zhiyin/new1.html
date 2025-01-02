@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片轮播</title>
+ 
+  <style>
+    /* 设置html和body的宽高以及去除默认边距 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 容器设置 */
+    .container {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* 背景图片设置 */
+    .beijin {
+      max-width: 100%;
+      max-height: 100%;
+      height: 100vh;
+      position: relative; 
+      z-index: 1; 
+    }
+
+    /* 标题图片 */
+    .title-img {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2; 
+      width: 50%; 
+      max-height: 15vh; 
+      object-fit: cover;
+    }
+
+    /* 轮播图容器样式 */
+    .carousel-container {
+      position: absolute;
+      top: 87%; /* 轮播图位于背景图的中间 */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      height: 30%;
+      z-index: 2; /* 使轮播图在背景图上方 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .carousel {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      width: 300%;
+      justify-content: space-around;
+    }
+
+    .carousel-item {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .carousel-item img {
+    max-width: 20%; /* 或者使用具体的像素值 */
+    max-height: 100%;
+    object-fit: contain;
+    cursor: pointer; /* 设置图片为可点击状态 */
+    width: 100px; /* 固定宽度 */
+    height: auto;  /* 根据宽度自动调整高度 */
+}
+
+
+
+    /* 控制 kai.png 图片的大小 */
+    .music-on {
+      width: 9%; 
+      height: auto; 
+    }
+
+    /* 控制 guan.png 图片的大小（保持默认大小） */
+    .music-off {
+      width: 8%; 
+      height: auto;
+    }
+
+    .yiwen {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 8vw;
+      height: auto;
+      z-index: 1;
+    }
+
+    /* 左右按钮样式 */
+    .prev, .next {
+      position: absolute;
+      top: 88%;
+      transform: translateY(-50%);
+      background: transparent; /* 去掉默认背景 */
+      border: none;
+      cursor: pointer;
+      z-index: 3; /* 确保按钮在轮播图上方 */
+    }
+
+    /* 左侧按钮 */
+    .prev {
+      left: 1px;
+    }
+
+    /* 右侧按钮 */
+    .next {
+      right: 0px;
+    }
+
+    /* 左右按钮图片样式 */
+    .prev img {
+      width: 40px; /* 设置按钮图片的大小 */
+      height: auto;
+    }
+
+    .next img {
+      width: 43px; /* 设置按钮图片的大小 */
+      height: auto;
+    }
+
+    /* 鼠标悬停时改变按钮背景 */
+    .prev:hover, .next:hover {
+      opacity: 0.8;
+    }
+
+    /* 边框图样式 */
+    .border-image {
+      position: absolute;
+      bottom: 8%; /* 放在轮播图的下方 */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 75%; /* 设置边框的宽度，保持与轮播图的一致 */
+      max-width: 100%;
+      z-index: 1; /* 使边框图位于轮播图下方 */
+    }
+
+    /* 拖拽目标区域样式 */
+    .drop-zone {
+      position: absolute;
+      bottom: 45%;
+      left: 70%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border: 2px dashed rgba(0, 0, 0, 0.5);
+      text-align: center;
+      line-height: 100px;
+      background-color: rgba(255, 255, 255, 0.3);
+      z-index: 2; /* 确保目标区域位于图片下方 */
+    }
+
+ 
+.dropped-image {
+    width: 100px; /* 保持与原始图片相同的宽度 */
+    height: auto; /* 根据宽度自动调整高度 */
+    object-fit: contain; /* 保证图片按比例缩放 */
+}
+  </style>
+</head>
+<body>
+  <!-- 背景图 -->
+  <div class="container">
+    <img src="../img/bj1.png" alt="背景图" class="beijin">
+    <img class="title-img" src="../img/bjs.png" alt="标题图片" id="title-img">
+    <!-- 轮播图 -->
+    <div class="carousel-container">
+      <div class="carousel">
+        <!-- 第一组图片 -->
+        <div class="carousel-item">
+          <img src="../img/hq1.png" alt="花器1" class="draggable" id="img1" draggable="true">
+          <img src="../img/hq2.png" alt="花器2" class="draggable" id="img2" draggable="true">
+          <img src="../img/hq3.png" alt="花器3" class="draggable" id="img3" draggable="true">
+          <img src="../img/hq4.png" alt="花器4" class="draggable" id="img4" draggable="true">
+        </div>
+        <!-- 第二组图片 -->
+        <div class="carousel-item">
+          <img src="../img/hq1.png" alt="花器5" class="draggable" id="img5" draggable="true">
+          <img src="../img/hq2.png" alt="花器5" class="draggable" id="img6" draggable="true">
+          <img src="../img/hq3.png" alt="花器6" class="draggable" id="img7" draggable="true">
+          <img src="../img/hq4.png" alt="花器6" class="draggable" id="img8" draggable="true">
+        </div>
+        <!-- 第三组图片 -->
+        <div class="carousel-item">
+          <img src="../img/hq1.png" alt="花器2" class="draggable" id="img9" draggable="true">
+          <img src="../img/hq2.png" alt="花器2" class="draggable" id="img10" draggable="true">
+          <img src="../img/hq3.png" alt="花器3" class="draggable" id="img11" draggable="true">
+          <img src="../img/hq4.png" alt="花器3" class="draggable" id="img12" draggable="true">
+        </div>
+      </div>
+    </div>
+
+    <!-- 背景音乐控制按钮 -->
+    <img id="music-btn" class="music-btn music-off" src="../img/guan.png" alt="控制背景音乐" style="position: absolute; top: 10px; right: 10px; z-index: 5;" />
+    <img id="yiwen" class="yiwen" src="../img/yw.png" />
+
+    <!-- 轮播图前后控制按钮 -->
+    <button class="prev"><img src="../img/qhz.png" alt="上一页"></button>
+    <button class="next"><img src="../img/qhy.png" alt="下一页"></button>
+
+    <!-- 边框图片 -->
+    <img src="../img/xiak.jpg" alt="边框" class="border-image">
+
+    <!-- 拖拽目标区域 -->
+    <div class="drop-zone">拖拽到这里</div>
+  </div>
+
+  
+  <script>
+    var isMusicPlaying = false;
+    var musicBtn = document.getElementById("music-btn");
+    var backgroundMusic = new Audio("./img/古琴白无瑕,屠化冰,蔡珊珊 - 梅花新弄.mp3"); 
+    
+    musicBtn.addEventListener('click', function() {
+        if (isMusicPlaying) {
+            backgroundMusic.pause();
+            musicBtn.src = "../img/guan.png"; 
+            musicBtn.classList.remove("music-on"); 
+            musicBtn.classList.add("music-off"); 
+        } else {
+            backgroundMusic.play();
+            musicBtn.src = "../img/kai.png"; 
+            musicBtn.classList.remove("music-off"); 
+            musicBtn.classList.add("music-on"); 
+        }
+        isMusicPlaying = !isMusicPlaying; 
+    });
+
+    let currentIndex = 0;
+    const items = document.querySelectorAll('.carousel-item');
+    const totalItems = items.length;
+
+    function moveToNextSlide() {
+        currentIndex = (currentIndex + 1) % totalItems;
+        updateCarouselPosition();
+    }
+
+    function moveToPrevSlide() {
+        currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+        updateCarouselPosition();
+    }
+
+    function updateCarouselPosition() {
+        const carousel = document.querySelector('.carousel');
+        const offset = -currentIndex * 100; // 每次移动100%宽度
+        carousel.style.transform = `translateX(${offset}%)`;
+    }
+
+    // 手动控制轮播
+    document.querySelector('.prev').addEventListener('click', moveToPrevSlide);
+    document.querySelector('.next').addEventListener('click', moveToNextSlide);
+
+    // 拖拽功能 - 支持触摸事件
+const draggableImages = document.querySelectorAll('.draggable');
+const dropZone = document.querySelector('.drop-zone');
+
+function createDragGhost(image) {
+    const ghost = image.cloneNode(true);
+    // 直接复制原始图片的样式以保持尺寸一致
+    ghost.style.position = 'absolute';
+    ghost.style.pointerEvents = 'none'; // 使副本不阻挡触摸事件
+    ghost.style.opacity = '0.7';
+    ghost.style.zIndex = '10'; // 确保拖动的副本在最上层
+    ghost.style.width = `${image.offsetWidth}px`;
+    ghost.style.height = `${image.offsetHeight}px`;
+    ghost.style.top = `${image.offsetTop}px`;
+    ghost.style.left = `${image.offsetLeft}px`;
+    document.body.appendChild(ghost);
+    return ghost;
+}
+
+function removeDragGhost(ghost) {
+    if (ghost) {
+        document.body.removeChild(ghost);
+    }
+}
+
+draggableImages.forEach(img => {
+    let isDragging = false;
+    let ghost;
+
+    img.addEventListener('touchstart', function(e) {
+        e.preventDefault(); // 阻止默认行为以防止页面滚动
+
+        // 创建拖动副本
+        ghost = createDragGhost(img);
+
+        // 获取触摸点位置
+        let touch = e.touches[0];
+        ghost.style.left = `${touch.pageX - ghost.offsetWidth / 2}px`;
+        ghost.style.top = `${touch.pageY - ghost.offsetHeight / 2}px`;
+
+        isDragging = true;
+
+        // 监听移动事件来更新副本的位置
+        function moveAt(touch) {
+            ghost.style.left = `${touch.pageX - ghost.offsetWidth / 2}px`;
+            ghost.style.top = `${touch.pageY - ghost.offsetHeight / 2}px`;
+        }
+
+        // 移除旧的移动事件监听器，以防重复添加
+        document.removeEventListener('touchmove', moveAt);
+        // 添加新的移动事件监听器
+        document.addEventListener('touchmove', function(e) {
+            moveAt(e.touches[0]);
+        });
+
+        // 监听结束事件来完成拖拽
+        img.addEventListener('touchend', function handleTouchEnd(e) {
+            document.removeEventListener('touchmove', moveAt);
+            img.removeEventListener('touchend', handleTouchEnd);
+
+            isDragging = false;
+
+            // 移除拖动副本
+            removeDragGhost(ghost);
+
+            // 如果目标区域包含拖放的元素
+            const touchEndX = e.changedTouches[0].pageX;
+            const touchEndY = e.changedTouches[0].pageY;
+
+            // 获取目标区域的位置
+            const dropZoneRect = dropZone.getBoundingClientRect();
+            const isInsideDropZone =
+                touchEndX >= dropZoneRect.left &&
+                touchEndX <= dropZoneRect.right &&
+                touchEndY >= dropZoneRect.top &&
+                touchEndY <= dropZoneRect.bottom;
+
+            if (isInsideDropZone) {
+                dropZone.innerHTML = ''; // 清空目标区域
+
+                // 克隆原始图片并添加到目标区域，同时保持尺寸不变
+                const newImage = img.cloneNode(true);
+                newImage.classList.add('dropped-image'); // 应用新样式，但不改变尺寸
+                newImage.style.width = `${img.offsetWidth}px`;
+                newImage.style.height = `${img.offsetHeight}px`;
+                dropZone.appendChild(newImage);
+            }
+        }, { once: true });
+    });
+});
+  </script>
+</body>
+</html>

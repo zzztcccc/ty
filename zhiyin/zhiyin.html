@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>雅韵花事</title>
+    <style type="text/css">
+        /* 确保body和html元素占据整个视口 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 容器设置 */
+        .container {
+            position: relative;
+            width: fit-content;
+            max-width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* 背景图片设置 */
+        .beijin {
+            max-width: 100%;
+            max-height: 100%;
+            height: 100vh;
+            position: relative; 
+            z-index: 1; 
+        }
+
+        /* 标题图片 */
+        .title-img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2; 
+            width: 50%; 
+            max-height: 15vh; 
+            object-fit: cover;
+        }
+
+        /* xiak-container 容器，包含 xiak 图片和左右按钮 */
+        .xiak-container {
+            position: absolute; 
+            top: 4.8vh; 
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%; 
+            z-index: 1; 
+            overflow: hidden;
+            height: 50vh; /* 确保轮播图容器的高度 */
+        }
+
+        /* xiak 图片 */
+        .xiak {
+            width: 100%; 
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            transition: opacity 0.5s ease-in-out; /* 图片切换时的过渡效果 */
+        }
+
+        /* 左侧按钮：定位在xiak图片的左侧 */
+        .hqz-btn {
+            position: absolute;
+            left: 0;
+            width: 7.5vw;
+            margin-left: -10px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        /* 右侧按钮 */
+        .hqy-btn {
+            position: absolute;
+            right: 0;
+            width: 8vw;
+            margin-right: -10px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .vase-container {
+            position: absolute;
+            bottom: 9%; 
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-around;
+            width: 70%; 
+            z-index: 1;
+        }
+
+        .vase-container img {
+            width: 20%;
+            height: auto;
+            object-fit: contain;
+            cursor: grab;
+            transition: transform 0.3s ease;
+        }
+
+        .vase-container img:hover {
+            transform: scale(1.1); 
+            z-index: 2;
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 1;
+            transition: opacity 0.5s ease; 
+        }
+
+        /* 提示 */
+        .tooltip-text {
+            position: absolute;
+            color: white;
+            font-family: "佛系演示体", sans-serif;
+            font-weight: bold;
+            z-index: 3; 
+            text-align: center;
+            pointer-events: none; 
+            font-size: 6vw;
+            display: none; 
+        }
+
+        #tooltip-flower {
+            top: 13vh;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #tooltip-vase {
+            bottom: 25vh;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #tooltip-switch {
+            top: 78vh;
+            left: 15%;
+            transform: translate(-50%, -50%);
+        }
+
+        .arrow-up {
+            position: absolute;
+            z-index: 3; 
+            top: 8vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6vw;
+            display: none; 
+        }
+
+        .arrow-down {
+            position: absolute;
+            width: 6vw;
+            bottom: -5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3; 
+            display: none; 
+        }
+
+        .switch-img {
+            position: absolute;
+            left: 5%;
+            bottom: 15vh;
+            width: 5vw;
+            height: auto;
+            z-index: 3; 
+            display: none; 
+        }
+
+        .music-on {
+            width: 9%; 
+            height: auto; 
+        }
+
+        .music-off {
+            width: 8%; 
+            height: auto;
+        }
+
+        .yiwen {
+            position: absolute;
+            top: 17px;
+            left: 15px;
+            width: 8vw;
+            height: auto;
+            z-index: 1;
+        }
+
+        @font-face {
+            font-family: 'ziti2';
+            src: url('字灵倾心体(商用需授权).ttf');
+        }
+
+        /* 设置文本字体 */
+        #tooltip-vase, #tooltip-flower, #tooltip-switch {
+            font-family: 'ziti2';
+        }
+    </style>
+</head>
+<body>
+    <!-- 标题图片 -->
+    <img class="title-img" src="../img/bjs.png" alt="标题图片" id="title-img">
+    <img class="beijin" src="../img/bj1.png" alt="背景">
+
+    <!-- xiak-container 容器，包含 xiak 图片和左右按钮 -->
+    <div class="xiak-container">
+        <!-- 左侧按钮 -->
+        <img class="hqz-btn" src="../img/qhz.png" alt="左侧切换按钮" id="hqz-btn">
+        
+        <!-- xiak 图片 -->
+        <img class="xiak" src="../img/xiak.png" alt="图片1" id="xiak-img-1">
+        <img class="xiak" src="../img/xiak.png" alt="图片2" id="xiak-img-2">
+        <img class="xiak" src="../img/xiak.png" alt="图片3" id="xiak-img-3">
+        <img class="xiak" src="../img/xiak.png" alt="图片4" id="xiak-img-4">
+
+        <!-- 右侧按钮 -->
+        <img class="hqy-btn" src="../img/qhy.png" alt="右侧切换按钮" id="hqy-btn">
+    </div>
+
+    <!-- 花器图片容器 -->
+    <div class="vase-container">
+        <img src="../img/hq1.png" alt="花器1">
+        <img src="../img/hq2.png" alt="花器2">
+        <img src="../img/hq3.png" alt="花器3">
+        <img src="../img/hq4.png" alt="花器4">
+    </div>
+
+    <div class="overlay"></div>
+
+    <!-- JavaScript 控制逻辑 -->
+    <script>
+        var imageGroups = [
+            ["../img/hq1.png", "../img/hq2.png", "../img/hq3.png", "../img/hq4.png"],
+            ["../img/hq5.png", "../img/hq6.png", "../img/hq7.png", "../img/hq8.png"],
+            ["../img/hq9.png", "../img/hq10.png", "../img/hq11.png", "../img/hq12.png"]
+        ];
+
+        var currentGroupIndex = 0;  // 当前图片组索引
+
+        // 获取 xiak 图片元素
+        var xiakImages = document.querySelectorAll('.xiak');
+
+        // 更新图片组
+        function updateImages() {
+            var group = imageGroups[currentGroupIndex];
+            xiakImages.forEach((img, index) => {
+                img.src = group[index];  // 更新每个图片的 src
+            });
+        }
+
+        // 左右按钮点击事件
+        document.getElementById('hqz-btn').addEventListener('click', function() {
+            currentGroupIndex = (currentGroupIndex - 1 + imageGroups.length) % imageGroups.length;
+            updateImages();
+        });
+
+        document.getElementById('hqy-btn').addEventListener('click', function() {
+            currentGroupIndex = (currentGroupIndex + 1) % imageGroups.length;
+            updateImages();
+        });
+
+        // 页面加载时初始化图片
+        window.onload = function() {
+            updateImages();
+        };
+    </script>
+</body>
+</html>

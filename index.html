@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>雅韵花事</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- 引入jQuery -->
+    <style type="text/css">
+      /* 保持样式不变 */
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        position: relative;
+        width: fit-content;
+        max-width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      .beijin {
+        max-width: 100%;
+        max-height: 100%;
+        height: 100vh;
+      }
+
+      .title {
+        position: absolute;
+        width: 100%;
+        left: 0%;
+        top: 5%;
+      }
+
+      .zhi,
+      .zhi1 {
+        position: absolute;
+        max-width: 100%;
+        max-height: 100%;
+        z-index: 1;
+        transition: opacity 1s ease-out;
+      }
+
+      .zhi {
+        left: 0%;
+        top: 0%;
+      }
+
+      .zhi1 {
+        right: 0%;
+        bottom: 0%;
+      }
+
+      .xia {
+        position: absolute;
+        width: 8%;
+        left: 50%;
+        bottom: 10px;
+        transform: translate(-50%, 0);
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      .shang{
+        position: absolute;
+        width: 8%;
+        left: 50%;
+        top: 10px;
+        transform: translate(-50%, 0);
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      .fade-out {
+        opacity: 0;
+        transition: opacity 1s ease-out;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <img class="beijin" src="img/背景.jpg" alt="背景">
+      <img class="title" src="img/标题.png" alt="标题">
+      <img class="zhi" src="img/纸上.png" alt="纸上">
+      <img class="zhi1" src="img/纸下.png" alt="纸下">
+      <img class="xia" src="img/返回键3.png" alt="下标">
+      <img class="shang" src="img/返回键2.png" alt="上标">
+    </div>
+
+    <script>
+      let startTouch = null;
+
+      $(document).ready(function() {
+        // 双指触摸开始时记录位置
+        $('body').on('touchstart', function(e) {
+          if (e.touches.length === 2) {
+            startTouch = { 
+              x: e.touches[0].clientX - e.touches[1].clientX, 
+              y: e.touches[0].clientY - e.touches[1].clientY 
+            };
+          }
+        });
+
+        // 双指滑动时检查并触发动画
+        $('body').on('touchmove', function(e) {
+          if (e.touches.length === 2 && startTouch) {
+            const deltaX = e.touches[0].clientX - e.touches[1].clientX;
+            const deltaY = e.touches[0].clientY - e.touches[1].clientY;
+
+            const distX = Math.abs(deltaX - startTouch.x);
+            const distY = Math.abs(deltaY - startTouch.y);
+
+            if (distX > 50 || distY > 50) {
+              // 使用 jQuery 的 fadeOut 来淡出元素
+              $('.zhi, .zhi1, .xia, .shang').fadeOut(1000, function() {
+                window.location.href = "./zyn/jieshao.html"; // 动画完成后跳转
+              });
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
